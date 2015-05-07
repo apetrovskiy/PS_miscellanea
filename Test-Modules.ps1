@@ -1,11 +1,14 @@
-ipmo C:\Projects\PS\STUPS\UIA\UIAutomation\bin\Release\UIAutomation.dll;
-ipmo C:\Projects\PS\STUPS\TMX\TMX\bin\Release\TMX.dll;
-ipmo C:\Projects\PS\STUPS\TAMS\TAMS\bin\Release\TAMS.dll;
-ipmo C:\Projects\PS\STUPS\TestUtils\bin\Release\TestUtils.dll;
-ipmo C:\Projects\NW\NMC\testConfigurator\NwxAutomation.Cmdlets\bin\Release\NwxAutomation.Cmdlets.dll;
-
+[string]$binModulesPath = "C:\Projects\PS\STUPS";
+[string]$psModulesPath = "C:\Projects\NW";
 $global:TestHome = "C:\TestHome";
-Get-ChildItem C:\Projects\NW\PSModules | `
+
+ipmo "$($binModulesPath)\UIA\UIAutomation\bin\Release\UIAutomation.dll";
+ipmo "$($binModulesPath)\TMX\TMX\bin\Release\TMX.dll";
+ipmo "$($binModulesPath)\TAMS\TAMS\bin\Release\TAMS.dll";
+ipmo "$($binModulesPath)\TestUtils\bin\Release\TestUtils.dll";
+ipmo "$($psModulesPath)\NMC\testConfigurator\NwxAutomation.Cmdlets\bin\Release\NwxAutomation.Cmdlets.dll";
+
+Get-ChildItem "$($psModulesPath)\PSModules" | `
 	?{ 'bin' -ne $_.Name -and 'obj' -ne $_.Name -and (-not $_.Name.Contains(".")) -and 'SelfTest' -ne $_.Name } | `
 	%{ try { Write-Host "loading module $($_.Name)"; ipmo $_.FullName; gmo $_.Name; } catch { Write-Host "failed to load the $($_.Name) module!"; $Error[0].CategoryInfo; if ('ParserError' -eq $Error[0].CategoryInfo) { "aaaaa!"; } } }
 
@@ -41,8 +44,8 @@ function Test-PowerShellSyntax
     }
 }
 
-Get-ChildItem C:\Projects\NW\*.ps1 -Recurse | Test-PowerShellSyntax
-Get-ChildItem C:\Projects\NW\*.psm1 -Recurse | Test-PowerShellSyntax
+Get-ChildItem "$($psModulesPath)\*.ps1" -Recurse | Test-PowerShellSyntax
+Get-ChildItem "$($psModulesPath)\*.psm1" -Recurse | Test-PowerShellSyntax
 
 function Test-Xml
 {
@@ -66,4 +69,4 @@ function Test-Xml
     }
 }
 
-Get-ChildItem C:\Projects\NW\*.xml* -Recurse | Test-Xml
+Get-ChildItem "$($psModulesPath)\*.xml*" -Recurse | Test-Xml
